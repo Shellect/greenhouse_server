@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍓 Strawberry Greenhouse</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Crimson+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0f0d;
+            --bg-card: #141f1a;
+            --bg-card-hover: #1a2922;
+            --accent-green: #22c55e;
+            --accent-green-dim: #16a34a;
+            --accent-red: #ef4444;
+            --accent-yellow: #eab308;
+            --accent-blue: #3b82f6;
+            --text-primary: #ecfdf5;
+            --text-secondary: #86efac;
+            --text-muted: #4ade80;
+            --border: #22543d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(ellipse at 20% 80%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(34, 197, 94, 0.05) 0%, transparent 50%),
+                linear-gradient(180deg, #0a0f0d 0%, #0d1510 100%);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo span {
+            color: var(--accent-green);
+        }
+        
+        .status-badge {
+            font-family: 'Space Mono', monospace;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-online {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+        
+        .status-offline {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+        
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        .health-score {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(34, 197, 94, 0.05) 100%);
+            border-radius: 1.5rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+        
+        .health-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .health-label {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-green-dim);
+            transform: translateY(-2px);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .card-icon {
+            font-size: 1.5rem;
+        }
+        
+        .card-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-unit {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+        
+        .card-status {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        
+        .status-ok { background: var(--accent-green); }
+        .status-warning { background: var(--accent-yellow); }
+        .status-critical { background: var(--accent-red); }
+        
+        .devices-section {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5rem;
+        }
+        
+        .device-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+        
+        .device-btn {
+            font-family: 'Space Mono', monospace;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .device-btn:hover {
+            border-color: var(--accent-green);
+            background: rgba(34, 197, 94, 0.1);
+        }
+        
+        .device-btn.active {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: var(--accent-green);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+        }
+        
+        .device-icon {
+            font-size: 1.8rem;
+        }
+        
+        .device-name {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .device-status {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 9999px;
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--accent-green);
+        }
+        
+        .device-status.off {
+            background: rgba(148, 163, 184, 0.2);
+            color: #94a3b8;
+        }
+        
+        .alerts-section {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+        
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid;
+        }
+        
+        .alert-warning {
+            background: rgba(234, 179, 8, 0.1);
+            border-color: var(--accent-yellow);
+        }
+        
+        .alert-critical {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--accent-red);
+        }
+        
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--accent-blue);
+        }
+        
+        .alert-message {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+        
+        .alert-time {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .recommendations {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, var(--bg-card) 100%);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--accent-green-dim);
+        }
+        
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .recommendation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .recommendation-icon {
+            font-size: 1.2rem;
+        }
+        
+        .recommendation-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .stage-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .stage-btn {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .stage-btn:hover, .stage-btn.active {
+            background: var(--accent-green);
+            color: var(--bg-dark);
+            border-color: var(--accent-green);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .health-value { font-size: 3.5rem; }
+            .card-value { font-size: 2rem; }
+            header { flex-direction: column; gap: 1rem; }
+        }
+        
+        /* ==================== NO DEVICE STATE ==================== */
+        
+        .no-device-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 15, 13, 0.95);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .no-device-overlay.hidden {
+            display: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .no-device-content {
+            max-width: 600px;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .waiting-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .no-device-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .no-device-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .waiting-animation {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .waiting-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: bounce 1.4s ease-in-out infinite both;
+        }
+        
+        .waiting-dot:nth-child(1) { animation-delay: -0.32s; }
+        .waiting-dot:nth-child(2) { animation-delay: -0.16s; }
+        .waiting-dot:nth-child(3) { animation-delay: 0s; }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        
+        .setup-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+        
+        .setup-card-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .setup-steps {
+            list-style: none;
+        }
+        
+        .setup-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(34, 197, 94, 0.1);
+        }
+        
+        .setup-step:last-child {
+            border-bottom: none;
+        }
+        
+        .step-number {
+            font-family: 'Space Mono', monospace;
+            width: 28px;
+            height: 28px;
+            background: rgba(34, 197, 94, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-green);
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .step-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .server-info {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px dashed var(--accent-green);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .server-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .server-address {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--accent-green);
+            background: var(--bg-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            user-select: all;
+        }
+        
+        
+        /* Connection quality indicator */
+        .connection-quality {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-left: 0.5rem;
+        }
+        
+        .quality-bar {
+            width: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+        
+        .quality-bar:nth-child(1) { height: 6px; }
+        .quality-bar:nth-child(2) { height: 10px; }
+        .quality-bar:nth-child(3) { height: 14px; }
+        
+        .quality-good .quality-bar { background: var(--accent-green); }
+        .quality-weak .quality-bar:nth-child(1),
+        .quality-weak .quality-bar:nth-child(2) { background: var(--accent-yellow); }
+        .quality-lost .quality-bar:nth-child(1) { background: var(--accent-red); }
+        
+        .last-update {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- No Device Overlay -->
+    <div class="no-device-overlay hidden" id="no-device-overlay">
+        <div class="no-device-content">
+            <div class="waiting-icon">🌱</div>
+            <h1 class="no-device-title">Подключите контроллер</h1>
+            <p class="no-device-subtitle">Для работы системы необходим NodeMCU с датчиками</p>
+            
+            <div class="waiting-animation">
+                <div class="waiting-dot"></div>
+                <div class="waiting-dot"></div>
+                <div class="waiting-dot"></div>
+            </div>
+            
+            <div class="setup-card">
+                <div class="setup-card-title">
+                    <span>📋</span> Быстрая настройка
+                </div>
+                <ul class="setup-steps">
+                    <li class="setup-step">
+                        <span class="step-number">1</span>
+                        <div class="step-content">
+                            <div class="step-title">Загрузите прошивку</div>
+                            <div class="step-description">Откройте greenhouse_controller.ino в Arduino IDE</div>
+                        </div>
+                    </li>
+                    <li class="setup-step">
+                        <span class="step-number">2</span>
+                        <div class="step-content">
+                            <div class="step-title">Настройте подключение</div>
+                            <div class="step-description">Укажите SSID, пароль WiFi и адрес сервера</div>
+                        </div>
+                    </li>
+                    <li class="setup-step">
+                        <span class="step-number">3</span>
+                        <div class="step-content">
+                            <div class="step-title">Загрузите на NodeMCU</div>
+                            <div class="step-description">Подключите плату и нажмите Upload</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="server-info">
+                <span class="server-label">Адрес сервера:</span>
+                <code class="server-address" id="server-address">загрузка...</code>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                🍓 <span>Strawberry</span>Greenhouse
+            </div>
+            <div class="status-badge status-online" id="connection-status">
+                <div class="pulse"></div>
+                <span id="connection-text">ONLINE</span>
+                <div class="connection-quality quality-good" id="connection-quality">
+                    <div class="quality-bar"></div>
+                    <div class="quality-bar"></div>
+                    <div class="quality-bar"></div>
+                </div>
+                <span class="last-update" id="last-update"></span>
+            </div>
+        </header>
+        
+        <div class="health-score">
+            <div class="health-value" id="health-score">--</div>
+            <div class="health-label">Health Score</div>
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Температура</span>
+                    <span class="card-icon">🌡️</span>
+                </div>
+                <div class="card-value"><span id="temperature">--</span><span class="card-unit">°C</span></div>
+                <div class="card-status">
+                    <span class="status-dot status-ok" id="temp-status"></span>
+                    <span id="temp-range">Норма: 18-25°C</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Влажность воздуха</span>
+                    <span class="card-icon">💨</span>
+                </div>
+                <div class="card-value"><span id="humidity">--</span><span class="card-unit">%</span></div>
+                <div class="card-status">
+                    <span class="status-dot status-ok" id="humidity-status"></span>
+                    <span>Норма: 60-75%</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Влажность почвы</span>
+                    <span class="card-icon">🌱</span>
+                </div>
+                <div class="card-value"><span id="soil-moisture">--</span><span class="card-unit">%</span></div>
+                <div class="card-status">
+                    <span class="status-dot status-ok" id="soil-status"></span>
+                    <span>Норма: 60-80%</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Освещённость</span>
+                    <span class="card-icon">☀️</span>
+                </div>
+                <div class="card-value"><span id="light-level">--</span><span class="card-unit">lux</span></div>
+                <div class="card-status">
+                    <span class="status-dot status-ok" id="light-status"></span>
+                    <span>Норма: 200-600 lux</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="devices-section">
+            <div class="section-title">⚡ Управление устройствами</div>
+            <div class="device-grid" id="devices-grid">
+                <button class="device-btn" data-device="pump">
+                    <span class="device-icon">💧</span>
+                    <span class="device-name">Полив</span>
+                    <span class="device-status off">OFF</span>
+                </button>
+                <button class="device-btn" data-device="fan">
+                    <span class="device-icon">🌀</span>
+                    <span class="device-name">Вентилятор</span>
+                    <span class="device-status off">OFF</span>
+                </button>
+                <button class="device-btn" data-device="heater">
+                    <span class="device-icon">🔥</span>
+                    <span class="device-name">Обогрев</span>
+                    <span class="device-status off">OFF</span>
+                </button>
+                <button class="device-btn" data-device="light">
+                    <span class="device-icon">💡</span>
+                    <span class="device-name">Свет</span>
+                    <span class="device-status off">OFF</span>
+                </button>
+                <button class="device-btn" data-device="humidifier">
+                    <span class="device-icon">🌫️</span>
+                    <span class="device-name">Увлажнитель</span>
+                    <span class="device-status off">OFF</span>
+                </button>
+                <button class="device-btn" data-device="cooler">
+                    <span class="device-icon">❄️</span>
+                    <span class="device-name">Охлаждение</span>
+                    <span class="device-status off">OFF</span>
+                </button>
+            </div>
+            
+            <div class="stage-selector">
+                <span class="card-title" style="width: 100%; margin-bottom: 0.5rem;">Стадия роста:</span>
+                <button class="stage-btn" data-stage="seedling">🌱 Рассада</button>
+                <button class="stage-btn active" data-stage="vegetative">🌿 Вегетация</button>
+                <button class="stage-btn" data-stage="flowering">🌸 Цветение</button>
+                <button class="stage-btn" data-stage="fruiting">🍓 Плодоношение</button>
+                <button class="stage-btn" data-stage="dormant">❄️ Покой</button>
+            </div>
+        </div>
+        
+        <div class="alerts-section">
+            <div class="section-title">🔔 Оповещения</div>
+            <div id="alerts-container">
+                <div class="alert-item alert-info">
+                    <span>ℹ️</span>
+                    <span class="alert-message">Загрузка данных...</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recommendations">
+            <div class="section-title">💡 Рекомендации</div>
+            <div id="recommendations-container">
+                <div class="recommendation-item">
+                    <span class="recommendation-icon">🌿</span>
+                    <span class="recommendation-text">Загрузка рекомендаций...</span>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            🍓 Strawberry Greenhouse Server v1.0 | NodeMCU Smart Agriculture
+        </footer>
+    </div>
+    
+    <script>
+        const API_BASE = '/api/v1';
+        let isOnline = true;
+        
+        // Определяем адрес сервера для инструкций
+        document.getElementById('server-address').textContent = 
+            `${window.location.hostname}:${window.location.port || '8000'}`;
+        
+        async function fetchStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/status`);
+                if (!response.ok) throw new Error('API error');
+                const data = await response.json();
+                updateDashboard(data);
+                updateConnectionStatus(data.connection);
+                setOnlineStatus(true);
+            } catch (error) {
+                console.error('Error fetching status:', error);
+                setOnlineStatus(false);
+            }
+        }
+        
+        function updateConnectionStatus(connection) {
+            const overlay = document.getElementById('no-device-overlay');
+            const qualityEl = document.getElementById('connection-quality');
+            const lastUpdateEl = document.getElementById('last-update');
+            const connectionTextEl = document.getElementById('connection-text');
+            const statusBadge = document.getElementById('connection-status');
+            
+            // Показываем overlay если нет подключённого контроллера
+            if (!connection.device_connected) {
+                overlay.classList.remove('hidden');
+            } else {
+                overlay.classList.add('hidden');
+            }
+            
+            // Обновляем качество связи
+            qualityEl.className = 'connection-quality quality-' + connection.connection_quality;
+            
+            // Обновляем текст статуса
+            if (connection.device_connected) {
+                connectionTextEl.textContent = 'ONLINE';
+                statusBadge.classList.remove('status-offline');
+                statusBadge.classList.add('status-online');
+            } else {
+                connectionTextEl.textContent = connection.connection_quality === 'unknown' 
+                    ? 'ОЖИДАНИЕ' : 'OFFLINE';
+                statusBadge.classList.remove('status-online');
+                statusBadge.classList.add('status-offline');
+            }
+            
+            // Показываем время последнего обновления
+            if (connection.seconds_since_last_reading !== null) {
+                const seconds = connection.seconds_since_last_reading;
+                if (seconds < 60) {
+                    lastUpdateEl.textContent = `${seconds}с назад`;
+                } else if (seconds < 3600) {
+                    lastUpdateEl.textContent = `${Math.floor(seconds / 60)}м назад`;
+                } else {
+                    lastUpdateEl.textContent = `${Math.floor(seconds / 3600)}ч назад`;
+                }
+            } else {
+                lastUpdateEl.textContent = '';
+            }
+        }
+        
+        
+        async function fetchAlerts() {
+            try {
+                const response = await fetch(`${API_BASE}/alerts?limit=5`);
+                if (!response.ok) throw new Error('API error');
+                const data = await response.json();
+                updateAlerts(data);
+            } catch (error) {
+                console.error('Error fetching alerts:', error);
+            }
+        }
+        
+        function setOnlineStatus(online) {
+            const statusEl = document.getElementById('connection-status');
+            const pulseEl = statusEl.querySelector('.pulse');
+            
+            if (online !== isOnline) {
+                isOnline = online;
+                if (!online) {
+                    // Сервер недоступен
+                    statusEl.classList.remove('status-online');
+                    statusEl.classList.add('status-offline');
+                    document.getElementById('connection-text').textContent = 'СЕРВЕР НЕДОСТУПЕН';
+                    if (pulseEl) pulseEl.style.display = 'none';
+                } else {
+                    if (pulseEl) pulseEl.style.display = 'block';
+                }
+            }
+        }
+        
+        function updateDashboard(data) {
+            // Health score
+            document.getElementById('health-score').textContent = 
+                data.health_score ? Math.round(data.health_score) : '--';
+            
+            // Sensor readings
+            if (data.current_readings) {
+                const r = data.current_readings;
+                document.getElementById('temperature').textContent = 
+                    r.temperature ? r.temperature.toFixed(1) : '--';
+                document.getElementById('humidity').textContent = 
+                    r.humidity ? r.humidity.toFixed(0) : '--';
+                document.getElementById('soil-moisture').textContent = 
+                    r.soil_moisture ? r.soil_moisture.toFixed(0) : '--';
+                document.getElementById('light-level').textContent = 
+                    r.light_level ? r.light_level.toFixed(0) : '--';
+                
+                // Update status indicators
+                updateStatusDot('temp-status', r.temperature, 18, 25);
+                updateStatusDot('humidity-status', r.humidity, 60, 75);
+                updateStatusDot('soil-status', r.soil_moisture, 60, 80);
+                updateStatusDot('light-status', r.light_level, 200, 600);
+            }
+            
+            // Devices
+            if (data.devices) {
+                data.devices.forEach(device => {
+                    const btn = document.querySelector(`[data-device="${device.device_type}"]`);
+                    if (btn) {
+                        const statusEl = btn.querySelector('.device-status');
+                        const isOn = device.status === 'on';
+                        btn.classList.toggle('active', isOn);
+                        statusEl.textContent = isOn ? 'ON' : 'OFF';
+                        statusEl.classList.toggle('off', !isOn);
+                    }
+                });
+            }
+            
+            // Growth stage
+            document.querySelectorAll('.stage-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.stage === data.growth_stage);
+            });
+            
+            // Recommendations
+            if (data.recommendations && data.recommendations.length > 0) {
+                const container = document.getElementById('recommendations-container');
+                container.innerHTML = data.recommendations.map(rec => `
+                    <div class="recommendation-item">
+                        <span class="recommendation-icon">✓</span>
+                        <span class="recommendation-text">${rec}</span>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function updateStatusDot(id, value, min, max) {
+            const dot = document.getElementById(id);
+            if (!value) {
+                dot.className = 'status-dot';
+                return;
+            }
+            if (value < min * 0.7 || value > max * 1.3) {
+                dot.className = 'status-dot status-critical';
+            } else if (value < min || value > max) {
+                dot.className = 'status-dot status-warning';
+            } else {
+                dot.className = 'status-dot status-ok';
+            }
+        }
+        
+        function updateAlerts(alerts) {
+            const container = document.getElementById('alerts-container');
+            if (alerts.length === 0) {
+                container.innerHTML = `
+                    <div class="alert-item alert-info">
+                        <span>✅</span>
+                        <span class="alert-message">Нет активных оповещений</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = alerts.map(alert => {
+                const levelClass = alert.level === 'critical' ? 'alert-critical' : 
+                                   alert.level === 'warning' ? 'alert-warning' : 'alert-info';
+                const icon = alert.level === 'critical' ? '🚨' : 
+                             alert.level === 'warning' ? '⚠️' : 'ℹ️';
+                return `
+                    <div class="alert-item ${levelClass}">
+                        <span>${icon}</span>
+                        <span class="alert-message">${alert.message}</span>
+                        <span class="alert-time">${new Date(alert.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Device control
+        document.querySelectorAll('.device-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const device = btn.dataset.device;
+                const isActive = btn.classList.contains('active');
+                const action = isActive ? 'off' : 'on';
+                
+                try {
+                    await fetch(`${API_BASE}/devices/command`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            device_type: device,
+                            device_id: 'main',
+                            action: action
+                        })
+                    });
+                    fetchStatus();
+                } catch (error) {
+                    console.error('Error sending command:', error);
+                }
+            });
+        });
+        
+        // Stage selector
+        document.querySelectorAll('.stage-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const stage = btn.dataset.stage;
+                try {
+                    await fetch(`${API_BASE}/control/settings`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            growth_stage: stage,
+                            auto_watering: true,
+                            auto_ventilation: true,
+                            auto_heating: true,
+                            auto_lighting: true
+                        })
+                    });
+                    fetchStatus();
+                } catch (error) {
+                    console.error('Error updating stage:', error);
+                }
+            });
+        });
+        
+        // Initial fetch and polling
+        fetchStatus();
+        fetchAlerts();
+        setInterval(fetchStatus, 5000);
+        setInterval(fetchAlerts, 10000);
+    </script>
+</body>
+</html>
+
+
