@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Optional, List
 from enum import Enum
 from pydantic import BaseModel, Field
-from sqlalchemy import Column, Integer, Float, String, DateTime, Boolean
+from sqlalchemy import Column, Integer, Float, String, DateTime, Boolean, Enum as SQLEnum
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -178,17 +178,8 @@ class DeviceStateResponse(BaseModel):
         from_attributes = True
 
 
-class ConnectionStatus(BaseModel):
-    """Статус подключения устройств"""
-    device_connected: bool = Field(description="Есть ли подключённое устройство")
-    last_reading_time: Optional[datetime] = Field(None, description="Время последнего чтения")
-    seconds_since_last_reading: Optional[int] = Field(None, description="Секунд с последнего чтения")
-    connection_quality: str = Field(default="unknown", description="Качество связи: good/weak/lost/unknown")
-
-
 class GreenhouseStatus(BaseModel):
     """Общий статус теплицы"""
-    connection: ConnectionStatus
     current_readings: Optional[SensorData]
     devices: List[DeviceStateResponse]
     active_alerts: int

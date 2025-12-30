@@ -1,19 +1,19 @@
 """
 Роутер для статуса и настроек управления теплицей.
 """
-from datetime import datetime
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.config import strawberry_config
-from src.controller import greenhouse_controller
-from src.database import get_session
-from src.models import (
-    SensorData, DeviceStateResponse, GreenhouseStatus,
-    ControlSettings, DeviceType, ConnectionStatus
+from config import strawberry_config
+from controller import greenhouse_controller
+from database import (
+    get_session, get_latest_reading, get_all_devices,
+    get_alerts_count, set_device_auto_mode
 )
-from src.repositories import SensorRepository, DeviceRepository, AlertRepository
+from models import (
+    SensorData, DeviceStateResponse, GreenhouseStatus,
+    ControlSettings, DeviceType
+)
 
 control_router = APIRouter(tags=["Control"])
 
@@ -21,16 +21,9 @@ control_router = APIRouter(tags=["Control"])
 @control_router.get("/status", response_model=GreenhouseStatus, tags=["Status"])
 async def get_greenhouse_status(db: AsyncSession = Depends(get_session)):
     """Получение полного статуса теплицы"""
-    sensor_repo = SensorRepository(db)
-    device_repo = DeviceRepository(db)
-    alert_repo = AlertRepository(db)
-
-    latest = await sensor_repo.get_latest()
-    devices = await device_repo.get_all()
-    alerts_count = await alert_repo.count_active()
-
-    # Определяем статус подключения устройства
-    connection = _calculate_connection_status(latest)
+    latest = await get_latest_reading(db)
+    devices = await get_all_devices(db)
+    alerts_count = await get_alerts_count(db)
 
     # Анализируем текущее состояние
     current_data = None
@@ -50,71 +43,30 @@ async def get_greenhouse_status(db: AsyncSession = Depends(get_session)):
         analysis = greenhouse_controller.analyze_readings(current_data.model_dump())
         health_score = analysis["health_score"]
         recommendations.extend(analysis["recommendations"])
-    else:
-        # Нет данных - добавляем рекомендацию по подключению
-        recommendations = ["📡 Подключите контроллер NodeMCU для начала работы"]
 
     return GreenhouseStatus(
-        connection=connection,
         current_readings=current_data,
         devices=[DeviceStateResponse.model_validate(d) for d in devices],
         active_alerts=alerts_count,
         growth_stage=greenhouse_controller.current_stage.value,
-        health_score=health_score if connection.device_connected else 0.0,
+        health_score=health_score,
         recommendations=recommendations
-    )
-
-
-def _calculate_connection_status(latest) -> ConnectionStatus:
-    """Вычисление статуса подключения устройства"""
-    if not latest or not latest.timestamp:
-        return ConnectionStatus(
-            device_connected=False,
-            last_reading_time=None,
-            seconds_since_last_reading=None,
-            connection_quality="unknown"
-        )
-
-    now = datetime.utcnow()
-    seconds_since = int((now - latest.timestamp).total_seconds())
-
-    # Определяем качество связи:
-    # < 2 минут = good (NodeMCU отправляет каждую минуту)
-    # 2-5 минут = weak
-    # > 5 минут = lost
-    if seconds_since < 120:
-        quality = "good"
-        connected = True
-    elif seconds_since < 300:
-        quality = "weak"
-        connected = True
-    else:
-        quality = "lost"
-        connected = False
-
-    return ConnectionStatus(
-        device_connected=connected,
-        last_reading_time=latest.timestamp,
-        seconds_since_last_reading=seconds_since,
-        connection_quality=quality
     )
 
 
 @control_router.post("/control/settings")
 async def update_control_settings(
-    settings: ControlSettings,
-    db: AsyncSession = Depends(get_session)
+        settings: ControlSettings,
+        db: AsyncSession = Depends(get_session)
 ):
     """Обновление настроек автоматического контроля"""
-    device_repo = DeviceRepository(db)
-
     greenhouse_controller.set_growth_stage(settings.growth_stage)
 
     # Обновляем автоматический режим устройств
-    await device_repo.set_auto_mode(DeviceType.PUMP.value, settings.auto_watering)
-    await device_repo.set_auto_mode(DeviceType.FAN.value, settings.auto_ventilation)
-    await device_repo.set_auto_mode(DeviceType.HEATER.value, settings.auto_heating)
-    await device_repo.set_auto_mode(DeviceType.LIGHT.value, settings.auto_lighting)
+    await set_device_auto_mode(db, DeviceType.PUMP.value, settings.auto_watering)
+    await set_device_auto_mode(db, DeviceType.FAN.value, settings.auto_ventilation)
+    await set_device_auto_mode(db, DeviceType.HEATER.value, settings.auto_heating)
+    await set_device_auto_mode(db, DeviceType.LIGHT.value, settings.auto_lighting)
 
     return {
         "status": "ok",
@@ -152,3 +104,5 @@ async def get_optimal_parameters():
         "ph": {"min": strawberry_config.PH_MIN, "max": strawberry_config.PH_MAX},
         "day_hours": {"start": strawberry_config.DAY_START_HOUR, "end": strawberry_config.DAY_END_HOUR}
     }
+
+

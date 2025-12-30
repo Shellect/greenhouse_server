@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Transparent center -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+    
+    <!-- Corner brackets -->
+    <item android:gravity="top|start">
+        <shape android:shape="rectangle">
+            <size android:width="40dp" android:height="4dp" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    <item android:gravity="top|start">
+        <shape android:shape="rectangle">
+            <size android:width="4dp" android:height="40dp" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    
+    <item android:gravity="top|end">
+        <shape android:shape="rectangle">
+            <size android:width="40dp" android:height="4dp" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    <item android:gravity="top|end">
+        <shape android:shape="rectangle">
+            <size android:width="4dp" android:height="40dp" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    
+    <item android:gravity="bottom|start">
+        <shape android:shape="rectangle">
+            <size android:width="40dp" android:height="4dp" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    <item android:gravity="bottom|start">
+        <shape android:shape="rectangle">
+            <size android:width="4dp" android:height="40dp" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    
+    <item android:gravity="bottom|end">
+        <shape android:shape="rectangle">
+            <size android:width="40dp" android:height="4dp" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+    <item android:gravity="bottom|end">
+        <shape android:shape="rectangle">
+            <size android:width="4dp" android:height="40dp" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+</layer-list>
+

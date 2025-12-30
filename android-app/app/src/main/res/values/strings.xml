@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Greenhouse Setup</string>
+    
+    <!-- Main Activity -->
+    <string name="welcome_title">🍓 Greenhouse Setup</string>
+    <string name="welcome_subtitle">Setup your smart greenhouse controller</string>
+    <string name="scan_qr_button">Scan Device QR Code</string>
+    <string name="camera_permission_required">Camera permission is required to scan QR codes</string>
+    
+    <!-- QR Scanner -->
+    <string name="qr_scanner_title">Scan QR Code</string>
+    <string name="qr_scanner_hint">Point camera at the QR code on your device</string>
+    <string name="invalid_qr_code">Invalid QR code. Please scan a Greenhouse device QR code.</string>
+    
+    <!-- WiFi Setup -->
+    <string name="wifi_setup_title">Connect to Device</string>
+    <string name="wifi_setup_subtitle">Connecting to %s…</string>
+    <string name="wifi_connecting">Connecting to device WiFi network…</string>
+    <string name="wifi_connected">Connected to device!</string>
+    <string name="wifi_connection_failed">Failed to connect. Please try again.</string>
+    <string name="wifi_not_found">Device network not found. Make sure the device is powered on.</string>
+    
+    <!-- Configuration -->
+    <string name="config_title">Configure WiFi</string>
+    <string name="config_subtitle">Select your home WiFi network</string>
+    <string name="wifi_ssid_label">WiFi Network</string>
+    <string name="wifi_password_label">WiFi Password</string>
+    <string name="server_address_label">Server Address</string>
+    <string name="server_port_label">Server Port</string>
+    <string name="device_name_label">Device Name (optional)</string>
+    <string name="save_config_button">Save Configuration</string>
+    <string name="scanning_networks">Scanning for WiFi networks…</string>
+    <string name="no_networks_found">No networks found</string>
+    <string name="select_network">Select a network</string>
+    
+    <!-- Setup Complete -->
+    <string name="setup_complete_title">Setup Complete! ✓</string>
+    <string name="setup_complete_subtitle">Your greenhouse controller is now configured</string>
+    <string name="device_will_restart">The device will restart and connect to your WiFi network.</string>
+    <string name="done_button">Done</string>
+    <string name="add_another_button">Add Another Device</string>
+    
+    <!-- Errors -->
+    <string name="error_title">Error</string>
+    <string name="error_configuration_failed">Failed to save configuration. Please try again.</string>
+    <string name="error_network_request">Network error. Please check your connection.</string>
+    <string name="error_device_not_responding">Device not responding. Please try again.</string>
+    <string name="retry_button">Retry</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="ok_button">OK</string>
+    
+    <!-- Connection Status -->
+    <string name="status_connecting">Connecting…</string>
+    <string name="status_verifying">Verifying connection…</string>
+    <string name="status_saving">Saving configuration…</string>
+    <string name="status_success">Success!</string>
+    <string name="status_failed">Failed</string>
+</resources>
+

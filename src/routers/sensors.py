@@ -1,43 +1,31 @@
-"""
-Роутер для работы с датчиками.
-"""
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.controller import greenhouse_controller
-from src.database import get_session
-from src.models import SensorData, SensorDataResponse
-from src.repositories import SensorRepository, DeviceRepository, AlertRepository
+from controller import greenhouse_controller
+from database import get_session, save_sensor_reading, create_alert, get_device_state, update_device_state, \
+    get_latest_reading, get_readings_history, get_readings_stats
+from models import SensorData, SensorDataResponse
 
 sensors_router = APIRouter(prefix='/sensors', tags=["Sensors"])
-
 
 @sensors_router.post('/data', response_model=dict)
 async def receive_sensor_data(data: SensorData, db: AsyncSession = Depends(get_session)):
     """
     Приём данных с датчиков NodeMCU.
-    При первом подключении контроллера — регистрирует его устройства.
     Анализирует данные и возвращает команды для устройств.
     """
-    sensor_repo = SensorRepository(db)
-    device_repo = DeviceRepository(db)
-    alert_repo = AlertRepository(db)
-
-    # Регистрируем контроллер при первом подключении
-    if not await device_repo.is_controller_registered(data.device_id):
-        await device_repo.register_controller(data.device_id)
-
     # Сохраняем показания
-    reading = await sensor_repo.save(data.model_dump())
+    reading = await save_sensor_reading(db, data.model_dump())
 
     # Анализируем и получаем команды
     analysis = greenhouse_controller.analyze_readings(data.model_dump())
 
     # Сохраняем оповещения
     for alert_data in analysis["alerts"]:
-        await alert_repo.create(
+        await create_alert(
+            db,
             level=alert_data["level"].value,
             message=alert_data["message"],
             parameter=alert_data.get("parameter"),
@@ -47,9 +35,9 @@ async def receive_sensor_data(data: SensorData, db: AsyncSession = Depends(get_s
     # Обновляем состояние устройств на основе команд
     commands_for_device = []
     for cmd in analysis["commands"]:
-        device = await device_repo.get_by_type(cmd.device_type.value, cmd.device_id)
+        device = await get_device_state(db, cmd.device_type.value, cmd.device_id)
         if device and device.auto_mode:
-            await device_repo.update_status(cmd.device_type.value, cmd.action.value, cmd.device_id)
+            await update_device_state(db, cmd.device_type.value, cmd.action.value, cmd.device_id)
             commands_for_device.append({
                 "device": cmd.device_type.value,
                 "action": cmd.action.value,
@@ -68,22 +56,16 @@ async def receive_sensor_data(data: SensorData, db: AsyncSession = Depends(get_s
 
 @sensors_router.get("/latest", response_model=Optional[SensorDataResponse])
 async def get_latest_sensor_data(db: AsyncSession = Depends(get_session)):
-    """Получение последних показаний датчиков"""
-    sensor_repo = SensorRepository(db)
-    reading = await sensor_repo.get_latest()
+    reading = await get_latest_reading(db)
     if not reading:
         raise HTTPException(status_code=404, detail="No sensor data available")
     return reading
 
 
 @sensors_router.get("/history")
-async def get_sensor_history(
-    hours: int = Query(default=24, ge=1, le=168),
-    db: AsyncSession = Depends(get_session)
-):
+async def get_sensor_history(hours: int = Query(default=24, ge=1, le=168), db: AsyncSession = Depends(get_session)):
     """Получение истории показаний за указанный период"""
-    sensor_repo = SensorRepository(db)
-    readings = await sensor_repo.get_history(hours=hours)
+    readings = await get_readings_history(db, hours=hours)
     return {
         "period_hours": hours,
         "count": len(readings),
@@ -104,10 +86,6 @@ async def get_sensor_history(
 
 
 @sensors_router.get("/stats")
-async def get_sensor_stats(
-    hours: int = Query(default=24, ge=1, le=168),
-    db: AsyncSession = Depends(get_session)
-):
+async def get_sensor_stats(hours: int = Query(default=24, ge=1, le=168), db: AsyncSession = Depends(get_session)):
     """Статистика показаний за период"""
-    sensor_repo = SensorRepository(db)
-    return await sensor_repo.get_stats(hours=hours)
+    return await get_readings_stats(db, hours=hours)

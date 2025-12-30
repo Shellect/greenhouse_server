@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors - Deep Teal/Green for nature -->
+    <color name="primary">#1B5E20</color>
+    <color name="primary_dark">#0D3B12</color>
+    <color name="primary_variant">#2E7D32</color>
+    <color name="primary_light">#4CAF50</color>
+    
+    <!-- Secondary Colors - Warm Coral/Orange for contrast -->
+    <color name="secondary">#FF7043</color>
+    <color name="secondary_variant">#E64A19</color>
+    <color name="secondary_light">#FFAB91</color>
+    
+    <!-- Accent -->
+    <color name="accent">#FFD54F</color>
+    
+    <!-- Backgrounds -->
+    <color name="background">#F5F5F5</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="card_background">#FFFFFF</color>
+    
+    <!-- Text Colors -->
+    <color name="on_surface">#1C1B1F</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="text_primary">#1C1B1F</color>
+    <color name="text_secondary">#49454F</color>
+    <color name="text_hint">#79747E</color>
+    
+    <!-- Semantic Colors -->
+    <color name="success">#4CAF50</color>
+    <color name="error">#F44336</color>
+    <color name="warning">#FF9800</color>
+    <color name="info">#2196F3</color>
+    
+    <!-- Basic -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    
+    <!-- Gradient -->
+    <color name="gradient_start">#1B5E20</color>
+    <color name="gradient_end">#4CAF50</color>
+    
+    <!-- WiFi signal -->
+    <color name="signal_excellent">#4CAF50</color>
+    <color name="signal_good">#8BC34A</color>
+    <color name="signal_fair">#FFC107</color>
+    <color name="signal_weak">#FF5722</color>
+</resources>
+
